@@ -67,5 +67,11 @@ median_total_steps_per_day_2 <- median(total_steps_per_day_2)
 library(lattice)
 a <- weekdays(strptime(complete_activity_data$date, "%Y-%m-%d"))
 complete_activity_data$weekday <- as.factor(ifelse((a == "Saturday") | (a == "Sunday"), "weekend", "weekday"))
-
+weekday_data <- complete_activity_data[complete_activity_data$weekday == "weekday",]
+weekend_data <- complete_activity_data[complete_activity_data$weekday == "weekend",]
+mean_weekday_steps_per_interval <- tapply(weekday_data$steps, weekday_data$interval, mean, na.rm = TRUE)
+mean_weekend_steps_per_interval <- tapply(weekend_data$steps, weekend_data$interval, mean, na.rm = TRUE)
+week_data <- rbind(data.frame(interval = names(mean_weekday_steps_per_interval), steps = mean_weekday_steps_per_interval, weekday = "weekday"), data.frame(interval = names(mean_weekend_steps_per_interval), steps = mean_weekend_steps_per_interval, weekday = "weekend"))
+xyplot(week_data$steps ~ week_data$interval | week_data$weekday, layout = c(1,2), xlab = "Interval", ylab = "Number of steps", type = "l")
 ```
+
